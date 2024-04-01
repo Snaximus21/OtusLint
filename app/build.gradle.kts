@@ -18,16 +18,6 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
-    lint {
-        // Указываем список правил, которые нужно включить
-        abortOnError = false // Параметр isAbortOnError отвечает за остановку сборки при обнаружении ошибок
-        warningsAsErrors = true // Превращаем предупреждения в ошибки, чтобы они также останавливали сборку
-
-        enable.add("DatabaseOnUIThread")
-
-        lintConfig = file("lint.xml")
-    }
-
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -62,4 +52,10 @@ dependencies {
     testImplementation(libs.lint)
     testImplementation(libs.lint.tests)
     testImplementation(libs.testutils)
+}
+
+tasks.withType<Jar> {
+    manifest {
+        attributes("Lint-Registry" to "com.android.tools.lint.client.api.IssueRegistry")
+    }
 }

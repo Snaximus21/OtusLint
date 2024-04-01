@@ -2,6 +2,7 @@ package otus.android.homeworklint
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -21,7 +22,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun queryDatabase() {
-        CoroutineScope(Dispatchers.Main).launch {
+        lifecycleScope.launch {
             db.getAllData()
         }
     }
