@@ -1,6 +1,5 @@
-package otus.android.homeworklint.lint
+package rg.android.checkslint.lint
 
-import android.os.Looper
 import com.android.tools.lint.detector.api.Category
 import com.android.tools.lint.detector.api.Detector
 import com.android.tools.lint.detector.api.Implementation
@@ -17,9 +16,9 @@ class DatabaseDetector : Detector(), Detector.UastScanner {
 
     companion object {
         private const val ID = "DatabaseOnUIThread"
-        private const val BRIEF_DESCRIPTION = "Замените Main поток на любой другой"
-        private const val EXPLANATION = "Замените Main поток на любой другой. " +
-                "Обращения к БД не должны выполняться на Main потоке"
+        private const val BRIEF_DESCRIPTION = "Don't use main dispatcher with DB operations."
+        private const val EXPLANATION = "Switch dispatcher from main thread! " +
+                "DataBase operations must be use in IO dispatcher."
 
         val ISSUE = Issue.create(
             id = ID,
@@ -32,21 +31,28 @@ class DatabaseDetector : Detector(), Detector.UastScanner {
         )
     }
 
-    override fun getApplicableMethodNames(): List<String> {
-        println("Method: ${object{}.javaClass.enclosingMethod?.name}")
-        return listOf("query", "insert", "update", "delete", "queryDatabase")
-    }
+    override fun getApplicableMethodNames(): List<String> =
+        listOf("query", "insert", "update", "delete", "queryDatabase")
 
     override fun visitMethodCall(context: JavaContext, node: UCallExpression, method: PsiMethod) {
         super.visitMethodCall(context, node, method)
-        println("Method: ${object{}.javaClass.enclosingMethod?.name}")
-        //if (Looper.getMainLooper() == Looper.myLooper()) {
+        if (isUsingMainDispatcher(node))
             context.report(
                 ISSUE,
                 node,
                 context.getLocation(node),
                 BRIEF_DESCRIPTION
             )
-        //}
+    }
+
+
+    private fun isUsingMainDispatcher(node: UCallExpression): Boolean {
+        val arguments = node.valueArguments
+        if (arguments.size > 1) {
+            val dispatcherArgument = arguments[1]
+            val dispatcherArgumentText = dispatcherArgument.asSourceString()
+            return dispatcherArgumentText.contains("Dispatchers.Main")
+        }
+        return false
     }
 }

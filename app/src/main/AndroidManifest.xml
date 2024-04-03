@@ -12,9 +12,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.HomeworkLint"
         tools:targetApi="31">
-        <meta-data
-            android:name="lint-issue-registries"
-            android:value="otus.android.homeworklint.lint.LintRegistry" />
         <activity
             android:name=".MainActivity"
             android:exported="true">

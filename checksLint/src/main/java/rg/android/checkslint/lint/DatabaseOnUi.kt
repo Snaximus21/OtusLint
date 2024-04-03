@@ -1,5 +1,5 @@
-package otus.android.homeworklint.lint
+package rg.android.checkslint.lint
 
 @Retention(AnnotationRetention.SOURCE)
 @Target(AnnotationTarget.FUNCTION)
-annotation class DatabaseOnUIThread
+annotation class DatabaseOnUi

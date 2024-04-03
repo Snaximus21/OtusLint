@@ -43,19 +43,4 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-
-    compileOnly(libs.kotlin.stdlib)
-
-    compileOnly(libs.lint.api)
-    compileOnly(libs.lint.checks)
-
-    testImplementation(libs.lint)
-    testImplementation(libs.lint.tests)
-    testImplementation(libs.testutils)
-}
-
-tasks.withType<Jar> {
-    manifest {
-        attributes("Lint-Registry" to "com.android.tools.lint.client.api.IssueRegistry")
-    }
 }

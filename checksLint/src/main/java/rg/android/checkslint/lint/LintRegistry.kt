@@ -1,14 +1,13 @@
-package otus.android.homeworklint.lint
+package rg.android.checkslint.lint
 
 import com.android.tools.lint.client.api.IssueRegistry
 import com.android.tools.lint.detector.api.CURRENT_API
 import com.android.tools.lint.detector.api.Issue
-import otus.android.homeworklint.lint.DatabaseDetector.Companion.ISSUE
 
 class LintRegistry : IssueRegistry() {
 
     override val issues: List<Issue>
-        get() = listOf(ISSUE)
+        get() = listOf(DatabaseDetector.ISSUE)
 
     override val api: Int
         get() = CURRENT_API
