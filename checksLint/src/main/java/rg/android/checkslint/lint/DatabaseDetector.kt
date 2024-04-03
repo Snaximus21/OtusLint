@@ -34,9 +34,9 @@ class DatabaseDetector : Detector(), Detector.UastScanner {
     override fun getApplicableMethodNames(): List<String> = listOf("query", "insert", "update", "delete", "queryDatabase")
 
     override fun visitMethodCall(context: JavaContext, node: UCallExpression, method: PsiMethod) {
-//        super.visitMethodCall(context, node, method)
+        super.visitMethodCall(context, node, method)
 
-       // if (Looper.getMainLooper() == Looper.myLooper()) {
+        if (isUsingMainDispatcher(node))
             context.report(
                 ISSUE,
                 node,
