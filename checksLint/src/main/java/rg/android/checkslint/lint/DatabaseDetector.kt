@@ -16,9 +16,9 @@ class DatabaseDetector : Detector(), Detector.UastScanner {
 
     companion object {
         private const val ID = "DatabaseOnUIThread"
-        private const val BRIEF_DESCRIPTION = "Don't use main dispatcher with DB operations."
-        private const val EXPLANATION = "Switch dispatcher from main thread! " +
-                "DataBase operations must be use in IO dispatcher."
+        private const val BRIEF_DESCRIPTION = "Замените Main поток на любой другой"
+        private const val EXPLANATION = "Замените Main поток на любой другой. " +
+                "Обращения к БД не должны выполняться на Main потоке"
 
         val ISSUE = Issue.create(
             id = ID,
@@ -31,20 +31,36 @@ class DatabaseDetector : Detector(), Detector.UastScanner {
         )
     }
 
-    override fun getApplicableMethodNames(): List<String> =
-        listOf("query", "insert", "update", "delete", "queryDatabase")
+    override fun getApplicableMethodNames(): List<String> = listOf("query", "insert", "update", "delete", "queryDatabase")
 
     override fun visitMethodCall(context: JavaContext, node: UCallExpression, method: PsiMethod) {
-        super.visitMethodCall(context, node, method)
-        if (isUsingMainDispatcher(node))
+//        super.visitMethodCall(context, node, method)
+
+       // if (Looper.getMainLooper() == Looper.myLooper()) {
             context.report(
                 ISSUE,
                 node,
                 context.getLocation(node),
                 BRIEF_DESCRIPTION
             )
+        //}
     }
 
+    private fun isInsideActivityOrFragment(node: UCallExpression): Boolean {
+        var parent: UElement? = node.uastParent
+        while (parent != null) {
+            if (parent is UClass) {
+                val annotations = parent.annotations
+                for (annotation in annotations) {
+                    if (annotation.qualifiedName == "android.app.Activity" || annotation.qualifiedName == "androidx.fragment.app.Fragment") {
+                        return true // Inside an Activity or Fragment
+                    }
+                }
+            }
+            parent = parent.uastParent
+        }
+        return false
+    }
 
     private fun isUsingMainDispatcher(node: UCallExpression): Boolean {
         val arguments = node.valueArguments

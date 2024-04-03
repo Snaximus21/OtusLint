@@ -21,4 +21,7 @@ dependencyResolutionManagement {
 
 rootProject.name = "HomeworkLint"
 include(":app")
+include(":mylibrary")
+include(":lib")
+include(":checks")
 include(":checksLint")
